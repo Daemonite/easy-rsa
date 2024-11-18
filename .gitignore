@@ -8,3 +8,4 @@ dist-staging
 .DS_Store
 test-deps/*
 shellcheck
+easyrsa3/*.zip
