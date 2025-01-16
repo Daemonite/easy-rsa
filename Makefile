@@ -256,7 +256,8 @@ renew-client:
 		VPN_NAME=$$(cat pki/vpn_name);\
 		\
 		echo "Renewing client certificate for $${VPN_NAME}";\
-		./easyrsa renew $(name).$${VPN_NAME} nopass;\
+		./easyrsa expire $(name).$${VPN_NAME};\
+		./easyrsa sign-req client $(name).$${VPN_NAME} nopass;\
 		\
 		echo "Generating OVPN file";\
 		OVPN_FILE=pki/$(name).$${VPN_NAME}.ovpn;\
