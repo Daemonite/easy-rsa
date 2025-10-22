@@ -1,7 +1,143 @@
 Easy-RSA 3 ChangeLog
 
-3.2.2 (TBD)
+3.2.5 (TBD)
 
+   * inline_file(): Make unknown certificate type non-fatal (b2373e2) (#1399)
+   * Remove 'kdc' as a 'built-in' X509-type (13e37d9) (#1399)
+   * peer-fingerprint: Allow 'show-cert' to be used (7cf55e0) (#1397)
+   * init-pki: Introduce configurable cryptography (a8da392) (#1397)
+
+   * Replace "local" openssl-easyrsa.cnf (80702d6..b31443d) (#1394)
+
+     Original bug report: #1390 'OpenBSD/LibreSSL failure'
+
+     With these changes, Easy-RSA now does the following:
+
+     Create a global safe SSL config file exactly as before and export it
+     to $OPENSSL_CONF, for use by any SSL library. This file is specifically
+     required by check_serial_unique(), which must have the Easy-RSA CA
+     configured file.
+
+     Use either an existing openssl-easyrsa.cnf file OR provide a default,
+     unexpanded tmp-file, which is exported to $EASYRSA_SSL_CONF, for use
+     ONLY by Easy-RSA. This must be unexpanded to allow $EASYRSA_REQ_CN to
+     be configured by the Easy-RSA command in use (eg. sign-req) once the
+     Easy-RSA command line has been fully parsed.
+
+     When calling easyrsa_openssl(), for LibreSSL or --force-safe-ssl,
+     expand the current $EASYRSA_SSL_CONF and export that to $OPENSSL_CONF,
+     for use by the called SSL command. Otherwise, use the current, unexpanded
+     file and export that.
+
+3.2.4 (2025-08-27)
+
+   * build-ca: get_passphrase(), write passphrase directly to temp-file (0cb9cdd)
+   * create_legacy_stream(): Designate 'selfsign' as NOT user configurable (f564b1c) (#1383)
+   * self_sign(): awk action, correct comment and reduce script (8e23ba3) (#1383)
+   * forbid_selfsign(): Allow issuer certificate serial to be absent (09dffec) (#1383)
+     Original bug report: github-user topical (#1382)
+   * self_sign(): Force use of Easy-RSA X509-type file 'selfsign' (7e39cc6) (#1383)
+   * random: Use verify_working_env() to configure EASYRSA_OPENSSL (32eb73d) (#1381)
+   * set_no_clobber(): Add simple error detection (0f93880) (#1379)
+   * revoke: Archive request and private key files and expand help (79754da) (#1378)
+     Original bug report: github-user spacefreak86 (#1377)
+   * Remove 'easyrsa_mkdir()', use only 'mkdir' (5738f3d) (#1376)
+   * help: Correct build-ca 'rawca' command option (0447f42) (#1374)
+   * Windows easyrsa-shell-init.sh: Modernize prompt (5bf2e99) (#1374)
+   * Windows UT: Update 'wop-test.sh' to latest 'easyrsa-shell-init.sh' (ea5b168) (#1374)
+   * verify_openvpn(): Convert Windows path '\' to *nix path '/' (75a8fdd) (#1374)
+   * verify_openvpn(): Windows, add check for 'openvpn.exe' (10c6267) (#1374)
+   * gen-crl: Replace file-move with file-copy-preserve-attribs (4cc1d48) (#1374)
+   * Windows easyrsa-shell-init.sh: Add non-fatal check for 'openvpn.exe' (bb78615) (#1374)
+   * Windows easyrsa-shell-init.sh: Require confirmation for User-Home mode (bfa6cfd) (#1374)
+   * Windows easyrsa-shell-init.sh: Allow Easy-RSA to use '\User\$HOME' (f194da5) (#1374)
+   * mutual_exclusions(): Include basic checks for --startdate/--enddate (e1478c3) (#1372)
+   * Windows easyrsa-shell-init.sh: Replace 'read -p' (49b2181) (#1371)
+   * inline: Include missing OpenVPN TLS key to cause INCOMPLETE warning (d98eee6) (#1368)
+   * Verbose: Make verbose messages command and function aware (7634b94) (#1368)
+   * CI: Add OpenSSL-3.5.1-LTS and LibreSSL-4.1.0 to private test suite
+   * secure_session(): Remove unnecessary check for existing directory (1322177) (#1367)
+   * all_legacy_files_v2(): Do not create PKI directory (b0260da) (#1367)
+   * Replace PKI and CA initialisation flags with command switch flags (2bdf582) (#1367)
+   * verify_working_env(): Move lock-file request to after PKI check (071405d) (#1367)
+   * Move basic sanity checks to verify_working_env() (509a36e) (#1367)
+   * New global option: --no-lockfile = env-var: $EASYRSA_NO_LOCKFILE (46c8647) (#1364)
+   * default_overview(): Add peer-fingerprint mode PKI identification (c9a0152) (#1363)
+   * help: Add in use algorithm and key-size/curve to top level status (10778cc) (#1363)
+   * help: Move 'utils' to command list and detailed help (e965234) (#1363)
+   * Restructure help (65c2bce) (#1363)
+   * export-p12: Split $p12_cipher_opts into respective parts (48bb8ee) (#1356)
+   * export-p12: Move inline file to 'inline/private' folder (22cabcb) (#1356)
+   * export-p12: Rename inline file extension to '.inline-p12' (22cabcb) (#1356)
+
+3.2.3 (2025-06-12)
+
+   * build-ca: Remove TLS Key processing (c1c2a06) (#1351)
+   * init-pki: Remove option 'soft' and TLS Key processing (976f864) (#1351)
+   * peer-fingerprint mode: Make CA mode mutually exclusive to PFP mode (8c1c435) (#1347)
+   * TLS key generation: Allow 'gen-tls-auth/crypt-key' without a CA Cert (2580dc2) (#1345)
+   * Inline_file(): Improvements self-signed integration (bc72a21) (#1345)
+   * verify_pki_init(): Always create 'issued' dir (f7e1b79) (#1343)
+   * inline_file(): Use ssl_cert_serial() (c0d2e82) (#1343)
+   * forbid_selfsign(): Compare cert serial to signing cert serial (29b2779) (#1342)
+   * Unit-test: Minimize Windows test (dc60c8b) (#1339)
+   * ssl_cert_x509v3_eku(): Localize variables and minor improvements (8c19a95) (#1337)
+   * inline_file(): Always use ssl_cert_x509v3_eku() to set $inline_crt_type (e1a2880) (#1337)
+   * sign-req: Disable inline for certificate type 'ca' (sub-ca) (f1252a3) (#1337)
+   * inline_file(): Localize variables $inline_crt_type & $inline_crt_CN (692e20a) (#1337)
+   * add_critical_attrib(): export temp-file name as input file (e5b8d97) (#1333)
+   * Unit-test: Drop old *nix test (63f3869) (#1335)
+   * Always export EASYRSA_SSL_CONF, when assigned (code standard) (e77240d) (#1334)
+   * show-expire: Move setting $pre_expire_window_s to status() (4b05181) (#1332)
+     Original bug report: Antonio Gurgel (#1331)
+   * inine_file(): Correct logic and add 'dh none' for DH params file (7d5c52e) (#1330)
+   * Update Copyright 2025 (8586bcf) (#1327)
+   * secure_session(): Use new easyrsa_mkdir() to create session dir (41c154c) (#1324)
+   * easyrsa_mkdir(): Separate Windows from *nix (7c76540) (#1324)
+   * easyrsa_mktemp(): Remove secondary atomic operation (1a44c33) (#1322)
+   * will_cert_be_valid(): Remove SSL option -noout (9c8465e) (#1321)
+   * New option --text: Create CSR files with human readable text (c152118) (#1319)
+   * Command 'write': Remove options 'overwrite' and 'filename' (153ec6f) (#1318)
+   * easyrsa_mktemp(): Change usage to not check for errors (64c201a) (#1315)
+   * New function set_no_clobber() (e4c229c) (#1314)
+   * Introduce "robust" lock-file mechanism (ff22f82) (#1313)
+     Original bug report: ARNOLD Somogyi (#1279)
+   * Introduce command line options --umask|--no-umask (d1b030d) (#1312)
+   * Fix shellcheck warnings:
+     (e28a35c) (6082f6f) (e0ec835) (e0e798a) (85b1086) (#1311)
+   * inline_file(): Include DH file or placeholder, for RSA Servers (8a7b1fa) (#1310)
+   * add_critical_attrib(): Do not add 'critical' if it exists (cdfaf61) (#1308)
+     Original bug report: Dmitry Kononov (#1306)
+   * select_vars(): Minor improvements (12ecc1a) (#1300)
+   * expire_status_v2(): Refactor 'if' to capture -date error (52dafed) (#1304)
+   * Reinstate old function as 'db_date_to_iso_8601()' (0444ad3) (#1303)
+   * Remove all references to file:easyrsa-tools.lib (e1c8386) (#1298)
+   * Correctly define options names - Remove wild-card pattern (d145504) (#1297)
+   * check_serial_unique(): Check for duplicate Subject error (be8467f) (#1294)
+   * renew: Print 'unique_subject = no' to index.txt.attr (857a4e7) (#1293)
+   * Update OpenSSL to 3.4.0 (d020b66) 
+   * Update OpenSSL to 3.5.0 (bcc2d33)
+
+3.2.2 (2025-02-01)
+
+   * Fold easyrsa-tools.lib into easyrsa (56cfa0c) (#1288)
+   * Revert da3c249: Do not remove index.txt.attr (a236b97) (#1287)
+   * Windows: Remove mktemp binary and text files (135f642) (#1285)
+   * op-test.sh: Disable download ossl3 and shellcheck binaries (473c43b) (#1284)
+   * Forbid self-signed certificate from being expired/renewed/revoked (ab45ae7) (#1274)
+   * Rename global option --ssl-conf (DEPRECATED) to --ssl-cnf (c788423) (#1270)
+   * bugfix: Save and Restore $EASYRSA_SSL_CONF for compound commands (7cdb14d) (#1270)
+   * bugfix: Always use locate_support_files() after secure_session() (d530bc3) (#1270)
+   * bugfix: easyrsa-tools.lib: renew, write full metadata to temp-file (b47d2af) (#1267)
+   * Introduce new command 'revoke-issued' (38bf2d8) (#1266)
+     Commands 'revoke' and 'revoke-issued' are identical.
+     Command 'revoke' can ONLY be used in batch mode.
+   * vars.example: Remove $EASYRSA_PKI (8ee8dcf) (#1262)
+     There is no effect on existing 'vars' files.
+   * easyrsa-tools.lib: Move to 'easyrsa3' directory (d30b688) (#1259)
+     This now includes 'easyrsa-tools.lib' in the distribution tarballs.
+   * Upgrade easyrsa-tools.lib to version 322 - As of command 'renew-ca'
+   * easyrsa-tools.lib: Introduce new command 'renew-ca' (ba32b0d) (#1255)
    * easyrsa-tools.lib: show-expire, allow --days to be zero (a1033a5) (#1254)
    * Command 'help': Ignore EASYRSA_SILENT (8804d6b) (#1249)
    * bugfix: easyrsa-tools.lib: renew SAN, remove excess word 'Address' (af17492) (#1251)

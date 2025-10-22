@@ -62,19 +62,6 @@ fi
 # This sample is in Windows syntax -- edit it for your path if not using PATH:
 #set_var EASYRSA_OPENSSL	"C:/Program Files/OpenSSL-Win32/bin/openssl.exe"
 
-# Edit this variable to point to your soon-to-be-created key directory.
-# By default, this will be "$PWD/pki" (ie: the "pki" subdirectory of the
-# directory you are currently in).
-#
-# WARNING: init-pki will do a rm -rf on this directory so make sure you define
-# it correctly!  Interactive mode will prompt before acting.
-#
-#set_var EASYRSA_PKI		"$PWD/pki"
-
-# Define directory for temporary subdirectories.
-#
-#set_var EASYRSA_TEMP_DIR	"$EASYRSA_PKI"
-
 # Define X509 DN mode.
 #
 # This is used to adjust which elements are included in the Subject field
@@ -147,9 +134,10 @@ fi
 #
 #set_var EASYRSA_CERT_EXPIRE	825
 
-# How many days until the next CRL publish date?  Note that the CRL can still
-# be parsed after this timeframe passes. It is only used for an expected next
-# publication date.
+# How many days until the Certificate Revokation List will expire.
+#
+# IMPORTANT: When the CRL expires, an OpenVPN Server which uses a
+# CRL will reject ALL new connections, until the CRL is replaced.
 #
 #set_var EASYRSA_CRL_DAYS	180
 
